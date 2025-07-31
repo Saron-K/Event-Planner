@@ -1,0 +1,87 @@
+# This is a basic GitHub Actions workflow for a web application.
+# It automatically runs whenever code is pushed to the 'main', 'front-end', or 'backend' branches,
+# or when a pull request is created.
+
+name: Event Planner CI
+
+# Define the events that trigger this workflow.
+# This workflow will run on pushes to 'main', 'front-end', and 'backend', and on all pull requests.
+on:
+  push:
+    branches:
+      - main
+      - Front-end
+      - Backend
+  pull_request:
+    branches:
+      - main
+      - Front-end
+      - Backend
+
+# A workflow is made up of one or more jobs that run in parallel.
+jobs:
+  # The 'build-and-test' job will handle building the code and running tests.
+  build-and-test:
+    # Specify the type of runner to use. 'ubuntu-latest' is a common choice.
+    runs-on: ubuntu-latest
+
+    # Define the steps for this job.
+    steps:
+      # Step 1: Checkout the repository code.
+      # This action checks out your repository under $GITHUB_WORKSPACE,
+      # so your workflow can access it.
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      # Step 2: Set up the Node.js environment.
+      # This action uses a specific version of Node.js.
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18' # You can specify your desired Node.js version here.
+
+      # Step 3: Install dependencies.
+      - name: Install dependencies
+        run: npm install
+
+      # Step 4: Build the application.
+      # This step compiles your source code and prepares it for deployment.
+      - name: Build application
+        run: npm run build
+
+      # Step 5: Run tests.
+      # It's crucial to run your automated tests to ensure code quality.
+      # If any tests fail, the workflow will stop here.
+      - name: Run tests
+        run: npm test
+
+  # The 'deploy' job will handle deploying the application.
+  # This job depends on the 'build-and-test' job completing successfully.
+  deploy:
+    runs-on: ubuntu-latest
+    needs: build-and-test # This job will not run until 'build-and-test' has succeeded.
+    if: github.ref == 'refs/heads/main' # Only run deployment when a push is made to the 'main' branch.
+
+    steps:
+      # Step 1: Checkout the code.
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      # Step 2: Configure AWS credentials.
+      # This action sets up the AWS credentials for deployment.
+      # You must add your AWS_ACCESS_KEY_ID and AWS_SECRET_ACCESS_KEY as repository secrets.
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: 'us-east-1' # Replace with your desired AWS region.
+
+      # Step 3: Deploy to production (e.g., to an S3 bucket).
+      # This is a placeholder. You would replace this with the actual commands
+      # to deploy your application to your hosting provider.
+      - name: Deploy to production
+        run: |
+          echo "Deploying the application to S3..."
+          # The 'build' directory is typically where the compiled code is located.
+          aws s3 sync ./build s3://my-event-planner-bucket --delete
