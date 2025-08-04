@@ -1,5 +1,5 @@
 import { Injectable,BadRequestException } from '@nestjs/common';
-import { PrismaClient, Prisma } from '@prisma/client';
+import { PrismaClient, Prisma, Role } from '@prisma/client';
 import { DatabaseService } from 'src/database/database.service';
 import * as bcrypt from 'bcrypt';
 import { JwtService } from '@nestjs/jwt';
@@ -41,11 +41,14 @@ export class UserService {
     });
   }
 
- async update(id: number, updateUserDto: UpdateUserDto) {
-  
+ async update(id: number, updateUserDto: UpdateUserDto, role: Role) {
+     const updateData= { ...updateUserDto };
+    if (role !== Role.admin) {
+      delete updateData.role; 
+    }
     return this.databaseService.user.update({
       where:{id},
-      data: updateUserDto,
+      data: updateData,
     });
   }
 
