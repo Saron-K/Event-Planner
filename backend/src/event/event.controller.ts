@@ -10,13 +10,13 @@ import { UpdateEventDto } from './dto/UpdateEventDto.dto';
 import { RequestWithUser } from 'src/common/types';
 //import { Roles } from 'src/auth/decorator/roles.decorator';
 
-@UseGuards(RolesGuard)
-@Roles([Role.admin])
+
 @Controller('event')
 export class EventController {
   constructor(private readonly eventService: EventService) {}
 
-
+@UseGuards(RolesGuard)
+@Roles([Role.admin])
   @Post()
  async create(@Body() createEventDto: CreateEventDto,@Req() req: RequestWithUser) {
     const creatorId= req.user.id; 
@@ -29,23 +29,28 @@ export class EventController {
     return this.eventService.findAll();
   }
 
- 
+ @UseGuards(RolesGuard)
+@Roles([Role.admin])
   @Get(':id')
  async findOne(@Param('id') id: string) {
     return this.eventService.findOne(+id);
   }
-  
+
+  @UseGuards(RolesGuard)
+@Roles([Role.admin])
   @Get(':id/sub-events')
   async findSubEvents(@Param('id') id: string) {
   return this.eventService.findSubEvents(+id);
 }
- 
+  @UseGuards(RolesGuard)
+ @Roles([Role.admin])
   @Patch(':id')
   async update(@Param('id') id: string, @Body() updateEventDto: UpdateEventDto) {
     return this.eventService.update(+id, updateEventDto);
   }
 
-
+  @UseGuards(RolesGuard)
+ @Roles([Role.admin])
   @Delete(':id')
   async remove(@Param('id') id: string) {
     return this.eventService.remove(+id);
