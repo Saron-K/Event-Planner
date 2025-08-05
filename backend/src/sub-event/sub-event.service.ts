@@ -14,31 +14,33 @@ export class SubEventService {
         startDate: new Date(createSubEventDto.startDate),
         endDate: new Date(createSubEventDto.endDate),
         creatorId,
-      eventId}
+      eventId,
+}
   });
 }
 
- async findAll() {
-    return await this.databaseSevrice.subEvent.findMany();
+ async findAll(eventId: number) {
+     return await this.databaseSevrice.subEvent.findMany({
+            where: { eventId },
+        });
   }
 
-  async findOne(id: number) {
-    return await this.databaseSevrice.subEvent.findUnique({
-      where: {id},
-    });
+  async findOne(id: number, eventId: number) {
+   return await this.databaseSevrice.subEvent.findUnique({
+            where: { id: id, eventId },
+        });
   }
 
-  async update(id: number, updateSubEventDto: UpdateSubeventDto) {
-    return await this.databaseSevrice.subEvent.update({
-      where: {id},
-      data: updateSubEventDto,
-          
-    });
+  async update(id: number,eventId: number, updateSubEventDto: UpdateSubeventDto) {
+    return await this.databaseSevrice.subEvent.updateMany({
+            where: { id: id, eventId },
+            data: updateSubEventDto,
+        });
   }
 
- async  remove(id: number) {
-    return await this.databaseSevrice.subEvent.delete({
-      where: {id},
-    });
+ async  remove(id: number, eventId: number) {
+    return await this.databaseSevrice.subEvent.deleteMany({
+            where: { id: id, eventId },
+        });
   }
 }

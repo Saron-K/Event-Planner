@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable , BadRequestException} from '@nestjs/common';
 import { DatabaseModule } from 'src/database/database.module';
 import { DatabaseService } from 'src/database/database.service';
 import { PrismaClient, Prisma } from '@prisma/client';
@@ -10,7 +10,14 @@ import { UpdateEventDto } from './dto/UpdateEventDto.dto';
 export class EventService {
   constructor(private readonly databaseSevrice: DatabaseService){}
   async create(createEventDto: CreateEventDto, creatorId: number) {
+   
+    if (!creatorId) {
+      
+  throw new BadRequestException('Creator ID not found');
+}
+
     return await this.databaseSevrice.event.create({
+      
       data:{ ...createEventDto,
         startDate: new Date(createEventDto.startDate),
         endDate: new Date(createEventDto.endDate),
@@ -25,14 +32,17 @@ export class EventService {
   async findOne(id: number) {
     return await this.databaseSevrice.event.findUnique({
       where: {id},
+       include: {
+      subEvents: true,
+    },
     });
   } 
-  
+  /*
   async findSubEvents(eventId: number) {
     return await this.databaseSevrice.subEvent.findMany({
       where: { eventId },
     });
-  }
+  }*/
 
   async update(id: number, updateEventDto: UpdateEventDto) {
     return await this.databaseSevrice.event.update({

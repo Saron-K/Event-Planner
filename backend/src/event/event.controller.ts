@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete,UseGuards,Req  } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete,UseGuards,Req, BadRequestException, UploadedFile  } from '@nestjs/common';
 import { EventService } from './event.service';
 import { PrismaClient, Prisma, Role } from '@prisma/client';
 import { RolesGuard } from 'src/auth/guards/roles.guard';
@@ -8,6 +8,7 @@ import { CreateDecoratorOptions } from '@nestjs/core';
 import { CreateEventDto } from './dto/CreateEventDto.dto';
 import { UpdateEventDto } from './dto/UpdateEventDto.dto';
 import { RequestWithUser } from 'src/common/types';
+import { UploadImage } from 'src/common/interceptors/uploadImage.interceptor';
 //import { Roles } from 'src/auth/decorator/roles.decorator';
 
 
@@ -18,9 +19,12 @@ export class EventController {
 @UseGuards(RolesGuard)
 @Roles([Role.admin])
   @Post()
- async create(@Body() createEventDto: CreateEventDto,@Req() req: RequestWithUser) {
-    const creatorId= req.user.id; 
-    return this.eventService.create(createEventDto,creatorId);
+  @UploadImage('events')
+ async create(@UploadedFile() image: Express.Multer.File, @Body() createEventDto: CreateEventDto,@Req() req: RequestWithUser) {
+   const creatorId =req.user?.id; 
+    const imagePath = image ? `/uploads/events/${image.filename}` : undefined;
+
+  return this.eventService.create({...createEventDto, image : imagePath}, creatorId);
   }
 
   @Public()
@@ -30,23 +34,31 @@ export class EventController {
   }
 
  @UseGuards(RolesGuard)
-@Roles([Role.admin])
+@Roles([Role.admin,Role.organiser])
   @Get(':id')
  async findOne(@Param('id') id: string) {
     return this.eventService.findOne(+id);
   }
-
+/*
   @UseGuards(RolesGuard)
 @Roles([Role.admin])
   @Get(':id/sub-events')
   async findSubEvents(@Param('id') id: string) {
   return this.eventService.findSubEvents(+id);
-}
+}*/
+
   @UseGuards(RolesGuard)
  @Roles([Role.admin])
   @Patch(':id')
-  async update(@Param('id') id: string, @Body() updateEventDto: UpdateEventDto) {
-    return this.eventService.update(+id, updateEventDto);
+  @UploadImage('events')
+  async update(@UploadedFile() image: Express.Multer.File, @Param('id') id: string, @Body() updateEventDto: UpdateEventDto) {
+     const imagePath = image?.filename ? `/uploads/events/${image.filename}` : undefined;
+
+  const updateData = imagePath
+    ? { ...updateEventDto, image: imagePath }
+    : updateEventDto;
+
+  return this.eventService.update(+id, updateData);
   }
 
   @UseGuards(RolesGuard)

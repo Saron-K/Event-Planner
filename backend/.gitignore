@@ -56,3 +56,14 @@ pids
 report.[0-9]*.[0-9]*.[0-9]*.[0-9]*.json
 
 /generated/prisma
+
+# Ignore uploads
+/uploads/*
+# keep the folders and .gitkeep
+!/uploads/
+!/uploads/users/
+!/uploads/users/.gitkeep
+!/uploads/sub-events/
+!/uploads/sub-events/.gitkeep
+!/uploads/events/
+!/uploads/events/.gitkeep
