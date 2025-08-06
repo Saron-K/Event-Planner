@@ -52,6 +52,18 @@ jobs:
       run:
         working-directory: ./backend
 
+    env:
+      DATABASE_URL: ${{ secrets.DATABASE_URL }}
+      ADMIN_EMAIL: ${{ secrets.ADMIN_EMAIL }}
+      ADMIN_PASSWORD: ${{ secrets.ADMIN_PASSWORD }}
+      JWT_SECRET: ${{ secrets.JWT_SECRET }}
+      POSTGRES_DB: ${{ secrets.POSTGRES_DATABASE }}
+      POSTGRES_HOST: ${{ secrets.POSTGRES_HOST }}
+      POSTGRES_USER: ${{ secrets.POSTGRES_USERNAME }}
+      POSTGRES_PASSWORD: ${{ secrets.POSTGRES_PASSWORD }}
+      POSTGRES_SYNCHRONIZE: ${{ secrets.POSTGRES_SYNCHRONIZE }}
+      POSTGRES_PORT: ${{ secrets.POSTGRES_PORT }}
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -101,3 +113,4 @@ jobs:
 
           echo "Deploying the application to S3..."
           aws s3 sync ./build s3://my-event-planner-bucket --delete
+
