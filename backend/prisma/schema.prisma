@@ -25,6 +25,7 @@ model User {
   updatedAt   DateTime     @updatedAt
   subEvents SubEvent[]
   events Event[]
+  image String?
 }
 
 model Event {

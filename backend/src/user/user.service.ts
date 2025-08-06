@@ -1,4 +1,4 @@
-import { Injectable,BadRequestException } from '@nestjs/common';
+import { Injectable,BadRequestException,UnauthorizedException } from '@nestjs/common';
 import { PrismaClient, Prisma, Role } from '@prisma/client';
 import { DatabaseService } from 'src/database/database.service';
 import * as bcrypt from 'bcrypt';
@@ -24,7 +24,7 @@ export class UserService {
          password: hashedPassword,
         role}
        });
-        const payload = { sub: user.id, email: user.email, role: user.role};
+        const payload = { id: user.id, email: user.email, role: user.role};
        return {
          access_token: await this.jwtService.signAsync(payload),
        };
@@ -41,16 +41,38 @@ export class UserService {
     });
   }
 
- async update(id: number, updateUserDto: UpdateUserDto, role: Role) {
-     const updateData= { ...updateUserDto };
-    if (role !== Role.admin) {
-      delete updateData.role; 
+async update(id: number, updateUserDto: UpdateUserDto, updaterRole: Role) {
+  const { email, password, role: newRole } = updateUserDto;
+
+
+  if (email) {
+    const existingUser = await this.databaseService.user.findUnique({ where: { email } });
+    if (existingUser && existingUser.id !== id) {
+      throw new BadRequestException('Email already exists');
     }
-    return this.databaseService.user.update({
-      where:{id},
-      data: updateData,
-    });
   }
+
+  const dataToUpdate: any = {};
+
+  if (email) dataToUpdate.email = email;
+
+  if (password) {
+    dataToUpdate.password = await bcrypt.hash(password, 10);
+  }
+
+  if (newRole) {
+    if (updaterRole !== Role.admin) {
+      throw new UnauthorizedException('Only admins can change user roles');
+    }
+    dataToUpdate.role = newRole;
+  }
+
+  return this.databaseService.user.update({
+    where: { id },
+    data: dataToUpdate,
+  });
+}
+
 
  async remove(id: number) {
     return this.databaseService.user.delete({
