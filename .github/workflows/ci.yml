@@ -17,7 +17,7 @@ on:
 
 jobs:
   frontend:
-    if: contains(github.ref, 'frontend') || github.ref == 'refs/heads/main'
+    if: github.ref == 'refs/heads/frontend' || github.ref == 'refs/heads/main'
     name: Frontend (Next.js)
     runs-on: ubuntu-latest
 
@@ -44,7 +44,7 @@ jobs:
         run: npm run test
 
   backend:
-    if: contains(github.ref, 'backend') || github.ref == 'refs/heads/main'
+    if: github.ref == 'refs/heads/backend' || github.ref == 'refs/heads/main'
     name: Backend (NestJS)
     runs-on: ubuntu-latest
 
@@ -100,5 +100,4 @@ jobs:
           # Replace with your backend deployment logic
 
           echo "Deploying the application to S3..."
-          # The 'build' directory is typically where the compiled code is located.
           aws s3 sync ./build s3://my-event-planner-bucket --delete
