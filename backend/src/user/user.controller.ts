@@ -3,10 +3,11 @@ import { UserService } from './user.service';
 import { PrismaClient, Prisma,Role } from '@prisma/client';
 import { CreateUserDto } from './dto/CreateUserDto.dto';
 import { UpdateUserDto } from './dto/UpdateUserDto.dto';
-import { RolesGuard } from 'src/auth/guards/roles.guard';
-import { Roles } from 'src/auth/decorators/roles.decorator';
-import { RequestWithUser } from 'src/common/types';
-import { UploadImage } from 'src/common/interceptors/uploadImage.interceptor';
+import { RolesGuard } from './../auth/guards/roles.guard';
+import { Roles } from './../auth/decorators/roles.decorator';
+import { RequestWithUser } from '.././common/types';
+import { UploadImage } from '.././common/interceptors/uploadImage.interceptor';
+
 
 @UseGuards(RolesGuard)
 @Roles([Role.admin])

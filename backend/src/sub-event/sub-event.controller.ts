@@ -1,12 +1,12 @@
 import { Controller, Get, Post, Body, Patch, Param, Delete,UseGuards, Req,UseInterceptors, UploadedFile } from '@nestjs/common';
 import { SubEventService } from './sub-event.service';
 import { PrismaClient, Prisma, Role } from '@prisma/client';
-import { Roles } from 'src/auth/decorators/roles.decorator';
+import { Roles } from './../auth/decorators/roles.decorator';
 import { CreateSubeventDto } from './dto/CreateSubeventDto.dto';
-import { RequestWithUser } from 'src/common/types';
+import { RequestWithUser } from '.././common/types';
 import { UpdateSubeventDto } from './dto/UpdateSubeventDto.dto';
-import { RolesGuard } from 'src/auth/guards/roles.guard';
-import { UploadImage } from 'src/common/interceptors/uploadImage.interceptor';
+import { RolesGuard } from './../auth/guards/roles.guard';
+import { UploadImage } from '.././common/interceptors/uploadImage.interceptor';
 
 
 @UseGuards(RolesGuard)

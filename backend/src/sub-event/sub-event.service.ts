@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaClient, Prisma } from '@prisma/client';
-import { DatabaseService } from 'src/database/database.service';
+import { DatabaseService } from '../database/database.service';
 import { CreateSubeventDto } from './dto/CreateSubeventDto.dto';
 import { UpdateSubeventDto } from './dto/UpdateSubeventDto.dto';
 
