@@ -32,14 +32,14 @@ export class SubEventService {
   }
 
   async update(id: number,eventId: number, updateSubEventDto: UpdateSubeventDto) {
-    return await this.databaseSevrice.subEvent.updateMany({
+    return await this.databaseSevrice.subEvent.update({
             where: { id: id, eventId },
             data: updateSubEventDto,
         });
   }
 
  async  remove(id: number, eventId: number) {
-    return await this.databaseSevrice.subEvent.deleteMany({
+    return await this.databaseSevrice.subEvent.delete({
             where: { id: id, eventId },
         });
   }
