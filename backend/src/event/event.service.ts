@@ -1,6 +1,6 @@
 import { Injectable , BadRequestException} from '@nestjs/common';
-import { DatabaseModule } from 'src/database/database.module';
-import { DatabaseService } from 'src/database/database.service';
+//import { DatabaseModule } from 'src/database/database.module';
+import { DatabaseService } from '../database/database.service';
 import { PrismaClient, Prisma } from '@prisma/client';
 import { CreateEventDto } from './dto/CreateEventDto.dto';
 import { UpdateEventDto } from './dto/UpdateEventDto.dto';
