@@ -32,9 +32,16 @@ export class SubEventService {
   }
 
   async update(id: number,eventId: number, updateSubEventDto: UpdateSubeventDto) {
+    const dataToUpdate: any = { ...updateSubEventDto };
+    if (updateSubEventDto.startDate) {
+      dataToUpdate.startDate = new Date(updateSubEventDto.startDate);
+    }
+    if (updateSubEventDto.endDate) {
+      dataToUpdate.endDate = new Date(updateSubEventDto.endDate);
+    }
     return await this.databaseSevrice.subEvent.update({
             where: { id: id, eventId },
-            data: updateSubEventDto,
+            data: dataToUpdate,
         });
   }
 
