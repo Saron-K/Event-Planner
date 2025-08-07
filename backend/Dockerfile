@@ -8,17 +8,19 @@ WORKDIR /app
 COPY package*.json ./
 COPY prisma ./prisma
 
-#Install dependencies
+# Install dependencies
 RUN npm install
+
+# 🔧 Generate Prisma Client inside Docker
+RUN npx prisma generate
 
 # Copy the rest of the app
 COPY . .
 
-# Optional: build if using TypeScript or want to precompile
-RUN npm run build
 
-# Expose port 
+
+# Expose port
 EXPOSE 3005
 
 # Run the app
-CMD ["npm", "run", "start:prod"]
+CMD ["npm", "run", "start:dev"]

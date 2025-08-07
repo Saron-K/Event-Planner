@@ -21,9 +21,9 @@ services:
     depends_on:
       - postgres
     volumes:
-      - .:/app
-      - /app/node_modules
-      - ./uploads:/app/uploads  
+       - .:/app
+       - /app/node_modules
+       - ./uploads:/app/uploads  
 
 volumes:
   pgdata:

@@ -7,6 +7,7 @@
 generator client {
   provider = "prisma-client-js"
   //output   = "../generated/prisma"
+   binaryTargets = ["native", "debian-openssl-3.0.x"]
 }
 
 datasource db {
@@ -34,7 +35,7 @@ model Event {
   desc        String
   startDate DateTime
   endDate DateTime
-  creator User @relation(fields: [creatorId], references: [id])
+  creator User @relation(fields: [creatorId], references: [id],onDelete: Cascade)
   creatorId Int
   subEvents SubEvent[]
   image String?
@@ -46,10 +47,11 @@ model SubEvent {
   desc        String
   startDate DateTime
   endDate DateTime
-  event Event @relation(fields: [eventId], references: [id])
+  event Event @relation(fields: [eventId], references: [id],onDelete: Cascade)
   eventId Int
   creator User @relation(fields: [creatorId], references: [id])
   creatorId Int
+  
    image String?
 }
 
